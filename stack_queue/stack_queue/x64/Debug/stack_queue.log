@@ -1,2 +1,14 @@
 ﻿  test.cpp
+D:\新建文件夹\visualstudio\比特\c++\tests\stack_queue\stack_queue\priority_queue.h(35,15): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+D:\新建文件夹\visualstudio\比特\c++\tests\stack_queue\stack_queue\test.cpp(54,29): message : 查看对正在编译的函数 模板 实例化“wyl::priority_queue<int,std::vector<T,std::allocator<T>>,wyl::less<T>>::priority_queue<int*>(InputIterator,InputIterator)”的引用
+          with
+          [
+              T=int,
+              InputIterator=int *
+          ]
+D:\新建文件夹\visualstudio\比特\c++\tests\stack_queue\stack_queue\test.cpp(54,29): message : 请参阅 "main" 中对 "wyl::priority_queue<int,std::vector<T,std::allocator<T>>,wyl::less<T>>::priority_queue" 的第一个引用
+          with
+          [
+              T=int
+          ]
   stack_queue.vcxproj -> D:\新建文件夹\visualstudio\比特\c++\tests\stack_queue\x64\Debug\stack_queue.exe

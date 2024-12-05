@@ -13,7 +13,10 @@
 //};
 namespace wyl
 {
-	template<class T, class Container = std::deque<T>>
+
+
+
+	template<class T, class Container = std::deque<T> >
 	class queue
 	{
 	public:

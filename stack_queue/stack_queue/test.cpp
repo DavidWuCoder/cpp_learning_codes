@@ -1,8 +1,11 @@
 #define _CRT_SECURE_NO_WARNINGS
 
+#include <algorithm>
+
 #include <iostream>
 #include "queue.h"
 #include "stack.h"
+#include "priority_queue.h"
 
 int main()
 {
@@ -34,18 +37,57 @@ int main()
 	//std::cout << std::endl;
 
 
-	wyl::queue<int> q;
+	//wyl::queue<int> q;
 
-	q.push(1);
-	q.push(2);
-	q.push(3);
-	q.push(4);
+	//q.push(1);
+	//q.push(2);
+	//q.push(3);
+	//q.push(4);
 
-	while (!q.empty())
+	//while (!q.empty())
+	//{
+	//	std::cout << q.front() << ' ';
+	//	q.pop();
+	//}
+	//std::cout << std::endl;
+	int a[] = { 1, 4, 2, 5, 6, 3, 2 };
+	wyl::priority_queue<int> pq(a, a + 7);
+
+	//wyl::priority_queue<int, std::vector<int>, wyl::greater<int>> pq(a, a + 7);
+
+
+	while (!pq.empty())
 	{
-		std::cout << q.front() << ' ';
-		q.pop();
+		std::cout << pq.top() << std::endl;
+		pq.pop();
 	}
-	std::cout << std::endl;
+
 	return 0;
 }
+
+//#define _CRT_SECURE_NO_WARNINGS
+//
+//#include <algorithm>
+//
+//#include <iostream>
+//#include "queue.h"
+//#include "stack.h"
+//#include "priority_queue.h"
+//
+//template<class T>
+//struct Less {
+//	bool operator()(const T& x, const T& y) const
+//	{
+//		return x < y;
+//	}
+//};
+//
+//int main()
+//{
+//	Less<int> lessfunc;
+//
+//	std::cout << lessfunc(1, 2) << std::endl;
+//	return 0;
+//}
+
+

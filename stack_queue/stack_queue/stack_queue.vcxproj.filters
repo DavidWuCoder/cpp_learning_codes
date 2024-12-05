@@ -26,5 +26,8 @@
     <ClInclude Include="queue.h">
       <Filter>源文件</Filter>
     </ClInclude>
+    <ClInclude Include="priority_queue.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
