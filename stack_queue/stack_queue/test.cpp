@@ -90,4 +90,20 @@ int main()
 //	return 0;
 //}
 
+#include <iostream>
 
+template<class T, size_t N>
+class Stack
+{
+private:
+	T _a[N];
+	int _top;
+};
+
+
+int main()
+{
+	Stack<int, 20> st1;
+	Stack<int, 2000> st2;
+	return 0;
+}
