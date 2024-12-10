@@ -90,38 +90,38 @@
 //	print<std::vector<int>>(v);
 //	return 0;
 //}
-//#include <iostream>
-//using namespace std;
-//
-//
-//class Person
-//{
-//public:
-//	Person(const char* name = "peter")
-//		: _name(name)
-//	{
-//
-//			cout << "Person()" << endl;
-//	}
-//	Person(const Person& p)
-//		: _name(p._name)
-//	{
-//		cout << "Person(const Person& p)" << endl;
-//	}
-//	Person& operator=(const Person& p)
-//	{
-//		cout << "Person operator=(const Person& p)" << endl;
-//		if (this != &p)
-//			_name = p._name;
-//		return *this;
-//	}
-//	~Person()
-//	{
-//		cout << "~Person()" << endl;
-//	}
-//protected:
-//	string _name; // 姓名
-//};
+#include <iostream>
+using namespace std;
+
+
+class Person
+{
+public:
+	Person(const char* name = "peter")
+		: _name(name)
+	{
+
+			cout << "Person()" << endl;
+	}
+	Person(const Person& p)
+		: _name(p._name)
+	{
+		cout << "Person(const Person& p)" << endl;
+	}
+	Person& operator=(const Person& p)
+	{
+		cout << "Person operator=(const Person& p)" << endl;
+		if (this != &p)
+			_name = p._name;
+		return *this;
+	}
+	~Person()
+	{
+		cout << "~Person()" << endl;
+	}
+protected:
+	string _name; // 姓名
+};
 //class Student : public Person
 //{
 //public:
@@ -239,49 +239,213 @@ using namespace std;
 //	return 0;
 //}
 
-class Person
+//class Person
+//{
+//public:
+//	Person(const char* name)
+//		:_name(name)
+//	{}
+//	string _name; // 姓名
+//};
+//
+//
+//class Student : virtual public Person
+//{
+//public:
+//	Student(const char* name, int num)
+//		:Person(name)
+//		, _num(num)
+//	{}
+//protected:
+//	int _num; //学号
+//};
+//class Teacher : virtual public Person
+//{
+//public:
+//	Teacher(const char* name, int id)
+//		:Person(name)
+//		, _id(id)
+//	{}
+//protected:
+//	int _id; // 职⼯编号
+//};
+//// 不要去玩菱形继承
+//class Assistant : public Student, public Teacher
+//{
+//public:
+//	Assistant(const char* name1, const char* name2, const char* name3)
+//		:Person(name3)
+//		, Student(name1, 1)
+//		, Teacher(name2, 2)
+//	{}
+//protected:
+//	string _majorCourse; // 主修课程
+//};
+//int main()
+//{
+//	// 思考⼀下这⾥a对象中_name是"张三", "李四", "王五"中的哪⼀个？
+//	Assistant a("张三", "李四", "王五");
+//	return 0;
+//}
+
+
+//class Person {
+//public:
+//	virtual void BuyTicket() { cout << "买票-全价" << endl; }
+//};
+//
+//
+//class Student : public Person {
+//public:
+//	virtual void BuyTicket() { cout << "买票-打折" << endl; }
+//};
+//
+//void Func(Person* ptr)
+//{
+//	// 这⾥可以看到虽然都是Person指针Ptr在调⽤BuyTicket
+//	// 但是跟ptr没关系，⽽是由ptr指向的对象决定的。
+//	ptr->BuyTicket();
+//}
+//int main()
+//{
+//	Person ps;
+//	Student st;
+//
+//	ps.BuyTicket();
+//	st.BuyTicket();
+//
+//	Func(&ps);
+//	Func(&st);
+//	return 0;
+//}
+
+//class A
+//{
+//public:
+//	virtual void func(int val = 1) { std::cout << "A->" << val << std::endl; }
+//	virtual void test() { func(); }
+//};
+//class B : public A
+//{
+//public:
+//	virtual void func(int val = 0) { std::cout << "B->" << val << std::endl; }
+//};
+//int main(int argc, char* argv[])
+//{
+//	B* p = new B;
+//	p->test();
+//	return 0;
+//}
+
+
+#include <iostream>
+using namespace std;
+
+//class Base {
+//public:
+//    virtual void show() { cout << "Base::show" << endl; }
+//};
+//
+//class Derived : public Base {
+//public:
+//    void show() override { cout << "Derived::show" << endl; }
+//};
+//
+//int main() {
+//    Base base;
+//    Derived derived;
+//
+//    // 通过对象直接调用
+//    base.show(); // 调用 Base::show
+//    derived.show(); // 调用 Derived::show
+//
+//    // 通过基类指针调用
+//    Base* pBase = &base;
+//    pBase->show(); // 调用 Base::show
+//
+//    pBase = &derived;
+//    pBase->show(); // 调用 Derived::show，多态性
+//
+//    // 通过基类引用调用
+//    Base& refBase = base;
+//    refBase.show(); // 调用 Base::show
+//
+//    Base& refDerived = derived;
+//    refDerived.show(); // 调用 Derived::show，多态性
+//
+//    return 0;
+//}
+
+//class A
+//{
+//public:
+//	virtual ~A()
+//	{
+//		cout << "~A()" << endl;
+//	}
+//};
+//class B : public A {
+//public:
+//	~B()
+//	{
+//		cout << "~B()->delete:" << _p << endl;
+//		delete _p;
+//	}
+//protected:
+//	int* _p = new int[10];
+//};
+//// 只有派⽣类Student的析构函数重写了Person的析构函数，下⾯的delete对象调⽤析构函数，才能
+//// 构成多态，才能保证p1和p2指向的对象正确的调⽤析构函数。
+//int main()
+//{
+//	A* p1 = new A;
+//	A* p2 = new B;
+//	delete p1;
+//	delete p2;
+//	return 0;
+//}
+
+
+class animal
 {
 public:
-	Person(const char* name)
-		:_name(name)
-	{}
-	string _name; // 姓名
+	virtual void func()
+	{
+	}
 };
-class Student : virtual public Person
+
+class dog : public animal
 {
 public:
-	Student(const char* name, int num)
-		:Person(name)
-		, _num(num)
-	{}
-protected:
-	int _num; //学号
+	virtual void func()
+	{
+		std::cout << "汪汪" << std::endl;
+	}
 };
-class Teacher : virtual public Person
+
+class cat : public animal
 {
 public:
-	Teacher(const char* name, int id)
-		:Person(name)
-		, _id(id)
-	{}
-protected:
-	int _id; // 职⼯编号
+	virtual void func()
+	{
+		std::cout << "喵喵" << std::endl;
+	}
 };
-// 不要去玩菱形继承
-class Assistant : public Student, public Teacher
+
+void f(animal& p)
 {
-public:
-	Assistant(const char* name1, const char* name2, const char* name3)
-		:Person(name3)
-		, Student(name1, 1)
-		, Teacher(name2, 2)
-	{}
-protected:
-	string _majorCourse; // 主修课程
-};
+	p.func();
+
+}
+
 int main()
 {
-	// 思考⼀下这⾥a对象中_name是"张三", "李四", "王五"中的哪⼀个？
-	Assistant a("张三", "李四", "王五");
+	cat a;
+	dog b;
+
+	f(a);
+	f(b);
 	return 0;
 }
+
+
