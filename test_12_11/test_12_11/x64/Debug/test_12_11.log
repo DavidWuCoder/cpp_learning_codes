@@ -1,0 +1,3 @@
+﻿  test.cpp
+D:\新建文件夹\visualstudio\比特\c++\tests\test_12_11\test_12_11\SearshBinaryTree.h(59): warning C4715: “BSTree<int>::insert”: 不是所有的控件路径都返回值
+  test_12_11.vcxproj -> D:\新建文件夹\visualstudio\比特\c++\tests\test_12_11\x64\Debug\test_12_11.exe
