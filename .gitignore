@@ -1,78 +1,18 @@
-# 编译输出
-[Dd]ebug/
-[Rr]elease/
-x64/
-build/
-[Bb]in/
+# Build and Release Folders
+bin-debug/
+bin-release/
 [Oo]bj/
+[Bb]in/
 
-# Visual Studio 文件
-*.suo
-*.user
-*.userosscache
-*.sln.docstates
+# Other files and folders
+.settings/
 
-# Visual Studio 2015+ 缓存/输出目录
-.vs/
-*.vspscc
-*.vssscc
-*.pidb
+# Executables
+*.swf
+*.air
+*.ipa
+*.apk
 
-# Visual Studio 2017 缓存
-*.dbmdl
-*.opendb
-
-# Visual Studio Code Workspace
-.vscode/
-
-# Windows Thunderbolt Networking Config
-thunderbolt/
-
-# CMake
-CMakeFiles/
-cmake_install.cmake
-
-# 预处理文件
-*.i
-
-# PCH 文件
-*.pch
-
-# .NET Core / .NET 5+
-project.lock.json
-project.fragment.lock.json
-artifacts/
-**/Properties/launchSettings.json
-
-# Resharper
-_ReSharper*/
-*.[Rr]e[Ss]harper
-
-# 其他可能的构建工具或库的缓存和临时文件
-local/
-temp/
-out/
-
-# 日志文件
-*.log
-
-# 库文件（如果你不是在版本控制中管理第三方库）
-*.dll
-*.lib
-*.exp
-*.pdb
-
-# 测试结果文件
-TestResults/
-
-# NuGet 包
-packages/
-
-# vcpkg 包管理器生成的文件
-vcpkg_installed/
-vcpkgports/
-vcpkg-configuration.json
-
-# 忽略所有空文件夹
-# （注意：这可能会阻止你提交空文件夹到 Git。如果需要保留空文件夹，请不要包含这一项。）
-# */.gitkeep
+# Project files, i.e. `.project`, `.actionScriptProperties` and `.flexProperties`
+# should NOT be excluded as they contain compiler settings and other important
+# information for Eclipse / Flash Builder.
