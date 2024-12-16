@@ -77,11 +77,3 @@
 //	return 0;
 //}
 
-#include <map>
-
-
-
-int main()
-{
-	return 0;
-}
