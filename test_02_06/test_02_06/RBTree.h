@@ -24,11 +24,11 @@ struct RBTreeNode
 	{}
 };
 
-template<class T>
+template<class T, class Ref, class Ptr>
 struct RBTreeIterator
 {
 	typedef RBTreeNode<T> Node;
-	typedef RBTreeIterator<T> Self;
+	typedef RBTreeIterator<T, Ref, Ptr> Self;
 	Node* _node;
 	Node* _root;
 	RBTreeIterator(Node* node, Node* root)
@@ -36,12 +36,12 @@ struct RBTreeIterator
 		,_root(root)
 	{}
 
-	T& operator*()
+	Ref operator*()
 	{
 		return _node->_data;
 	}
 
-	T* operator->()
+	Ptr operator->()
 	{
 		return &_node->_data;
 	}
@@ -129,9 +129,10 @@ class RBTree
 	typedef RBTreeNode<T> Node;
 	Node* _root = nullptr;
 public:
-	typedef RBTreeIterator<T> Iterator;
+	typedef RBTreeIterator<T, T&, T*> Iterator;
+	typedef RBTreeIterator<T, const T&, const T*> ConstIterator;
 
-	Iterator Begin()
+	Iterator Begin() 
 	{
 		Node* cur = _root;
 		while (cur && cur->_left)
@@ -142,19 +143,41 @@ public:
 		return Iterator(cur, _root);
 	}
 
-	Iterator End()
+	Iterator End() 
 	{
 		return Iterator(nullptr, _root);
 	}
 
+	ConstIterator Begin() const
+	{
+		Node* cur = _root;
+		while (cur && cur->_left)
+		{
+			cur = cur->_left;
+		}
+
+		return ConstIterator(cur, _root);
+	}
+
+	ConstIterator End() const
+	{
+		return ConstIterator(nullptr, _root);
+	}
+
+	~RBTree()
+	{
+		Destroy(_root);
+		_root = nullptr;
+	}
+
 	// 旋转代码的实现跟AVL树是⼀样的，只是不需要更新平衡因⼦
-	bool Insert(const T& data)
+	std::pair<Iterator, bool> Insert(const T& data)
 	{
 		if (_root == nullptr)
 		{
 			_root = new Node(data);
 			_root->_col = BLACK;
-			return true;
+			return std::make_pair(Iterator(_root, _root), true);
 		}
 
 		KeyofT kot;
@@ -174,10 +197,11 @@ public:
 			}
 			else
 			{
-				return false;
+				return std::make_pair(Iterator(cur, _root), false);
 			}
 		}
 		cur = new Node(data);
+		Node* newnode = cur;
 		// 新增结点。颜⾊红⾊给红⾊
 		cur->_col = RED;
 		if (kot(parent->_data) < kot(data))
@@ -265,7 +289,8 @@ public:
 		}
 
 		_root->_col = BLACK;
-		return true;
+		return std::make_pair(Iterator(newnode, _root), true);
+
 	}
 
 	void RotateR(Node* parent)
@@ -337,7 +362,7 @@ public:
 		}
 	}
 
-	Node* Find(const K& key)
+	Iterator Find(const K& key)
 	{
 		Node* cur = _root;
 		while (cur)
@@ -352,11 +377,19 @@ public:
 			}
 			else
 			{
-				return cur;
+				return Iterator(cur, _root);
 			}
 		}
-		return nullptr;
+		return End();
 	}
 
+	void Destroy(Node* root)
+	{
+		if (root == nullptr)
+			return;
+		Destroy(root->_left);
+		Destroy(root->_right);
+		delete root;
+	}
 
 };

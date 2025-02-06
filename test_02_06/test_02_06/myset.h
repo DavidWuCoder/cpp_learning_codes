@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "RBTree.h"
 
@@ -16,22 +16,53 @@ namespace wyl {
 
 	public:
 		typedef typename RBTree<K, const K, SetKeyOfT>::Iterator iterator;
+		typedef typename RBTree<K, const K, SetKeyOfT>::ConstIterator const_iterator;
 		iterator begin()
 		{
 			return _rbtree.Begin();
 		}
 
-		iterator end()
+		const_iterator end()
 		{
 			return _rbtree.End();
 		}
-		bool insert(const K& key)
+
+		const_iterator begin() const
+		{
+			return _rbtree.Begin();
+		}
+
+		iterator end() const
+		{
+			return _rbtree.End();
+		}
+
+
+		std::pair<iterator, bool> insert(const K& key)
 		{
 			return _rbtree.Insert(key);
+		}
+
+		iterator find(const K& key)
+		{
+			return _rbtree.find(key);
 		}
 	private:
 		RBTree<K, const K, SetKeyOfT> _rbtree;
 	};
+
+	void Print(const set<int>& s)
+	{
+		set<int>::const_iterator it = s.end();
+		while (it != s.begin())
+		{
+			--it;
+			// 不⽀持修改
+			//*it += 2;
+			cout << *it << " ";
+		}
+		cout << endl;
+	}
 	
 	void test_set()
 	{
@@ -58,5 +89,6 @@ namespace wyl {
 		}
 		std::cout << std::endl;
 
+		Print(s);
 	}
 }

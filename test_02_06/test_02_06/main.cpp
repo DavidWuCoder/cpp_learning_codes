@@ -8,7 +8,7 @@ using namespace std;
 int main()
 {
 	wyl::test_map();
-	wyl::test_set();
+	//wyl::test_set();
 	return 0;
 }
 
