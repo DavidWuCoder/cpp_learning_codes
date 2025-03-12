@@ -155,9 +155,9 @@
 //};
 
 #define _CRT_SECURE_NO_WARNINGS 1
-#define _CRT_SECURE_NO_WARNINGS 1
 
 #include<iostream>
+#include <list>
 #include<assert.h>
 #include<string.h>
 #include<algorithm>
@@ -308,42 +308,87 @@ private:
 //	return 0;
 //}
 
-namespace wyl 
-{
-	string addStrings(string num1, string num2)
-	{
-		string str;
-		int end1 = num1.size() - 1, end2 = num2.size() - 1;
-		int next = 0;
-		while (end1 >= 0 || end2 >= 0)
-		{
-			int val1 = end1 >= 0 ? num1[end1--] - '0' : 0;
-			int val2 = end2 >= 0 ? num2[end2--] - '0' : 0;
-			int ret = val1 + val2 + next;
-			next = ret / 10;
-			ret = ret % 10;
-			str += ('0' + ret);
-		}
-		if (next == 1)
-			str += '1';
-		reverse(str.begin(), str.end());
-		cout << "******************************" << endl;
-		return str;
-	}
-}
-// 场景1
-int main()
-{
-	wyl::string ret = wyl::addStrings("11111", "2222");
-	cout << ret.c_str() << endl;
-	return 0;
-}
-////// 场景2
+//namespace wyl 
+//{
+//	string addStrings(string num1, string num2)
+//	{
+//		string str;
+//		int end1 = num1.size() - 1, end2 = num2.size() - 1;
+//		int next = 0;
+//		while (end1 >= 0 || end2 >= 0)
+//		{
+//			int val1 = end1 >= 0 ? num1[end1--] - '0' : 0;
+//			int val2 = end2 >= 0 ? num2[end2--] - '0' : 0;
+//			int ret = val1 + val2 + next;
+//			next = ret / 10;
+//			ret = ret % 10;
+//			str += ('0' + ret);
+//		}
+//		if (next == 1)
+//			str += '1';
+//		reverse(str.begin(), str.end());
+//		cout << "******************************" << endl;
+//		return str;
+//	}
+//}
+////// 场景1
+////int main()
+////{
+////	wyl::string ret = wyl::addStrings("11111", "2222");
+////	cout << ret.c_str() << endl;
+////	return 0;
+////}
+//////// 场景2
+////int main()
+////{
+////	bit::string ret;
+////	ret = bit::addStrings("11111", "2222");
+////	cout << ret.c_str() << endl;
+////	return 0;
+////}
+//// Test.cpp
+//#include"list.h"
 //int main()
 //{
-//	bit::string ret;
-//	ret = bit::addStrings("11111", "2222");
-//	cout << ret.c_str() << endl;
+//	wyl::list<wyl::string> lt;
+//	cout << "*************************" << endl;
+//	wyl::string s1("111111111111111111111");
+//	lt.push_back(s1);
+//	cout << "*************************" << endl;
+//	lt.push_back(wyl::string("22222222222222222222222222222"));
+//	cout << "*************************" << endl;
+//	lt.push_back("3333333333333333333333333333");
+//	cout << "*************************" << endl;
+//	lt.push_back(move(s1));
+//	cout << "*************************" << endl;
 //	return 0;
 //}
 
+
+//void Fun(int& x) { cout << "左值引⽤" << endl; }
+//void Fun(const int& x) { cout << "const 左值引⽤" << endl; }
+//void Fun(int&& x) { cout << "右值引⽤" << endl; }
+//void Fun(const int&& x) { cout << "const 右值引⽤" << endl; }
+//
+//template<class T>
+//void Function(T&& t)
+//{
+//	//Fun(t);
+//	Fun(forward<T>(t));
+//}
+//int main()
+//{
+//	// 10是右值，推导出T为int，模板实例化为void Function(int&& t)
+//	Function(10); // 右值
+//	int a;
+//	// a是左值，推导出T为int&，引⽤折叠，模板实例化为void Function(int& t)
+//	Function(a); // 左值
+//	// std::move(a)是右值，推导出T为int，模板实例化为void Function(int&& t)
+//	Function(std::move(a)); // 右值
+//	const int b = 8;
+//	// a是左值，推导出T为const int&，引⽤折叠，模板实例化为void Function(const int&t)
+//	Function(b); // const 左值
+//	// std::move(b)右值，推导出T为const int，模板实例化为void Function(const int&&t)
+//	Function(std::move(b)); // const 右值
+//	return 0;
+//}
