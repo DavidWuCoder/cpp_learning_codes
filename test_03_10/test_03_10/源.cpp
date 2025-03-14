@@ -157,7 +157,7 @@
 #define _CRT_SECURE_NO_WARNINGS 1
 
 #include<iostream>
-#include <list>
+#include "list.h"
 #include<assert.h>
 #include<string.h>
 #include<algorithm>
@@ -392,3 +392,129 @@ private:
 //	Function(std::move(b)); // const 右值
 //	return 0;
 //}
+
+//template <class ...Args>
+//void Print(Args&&... args)
+//{
+//	cout << sizeof...(args) << endl;
+//}
+//int main()
+//{
+//	double x = 2.2;
+//	Print(); // 包⾥有0个参数
+//	Print(1); // 包⾥有1个参数
+//	Print(1, string("xxxxx")); // 包⾥有2个参数
+//	Print(1.1, string("xxxxx"), x); // 包⾥有3个参数
+//	return 0;
+//}
+
+
+//// 编译时递归推导
+//void ShowList()
+//{
+//	// 编译器时递归的终⽌条件，参数包是0个时，直接匹配这个函数
+//	cout << endl;
+//}
+//template <class T, class ...Args>
+//void ShowList(T x, Args... args)
+//{
+//	cout << x << " ";
+//	// args是N个参数的参数包
+//	// 调⽤ShowList，参数包的第⼀个传给x，剩下N-1传给第⼆个参数包
+//	ShowList(args...);
+//}
+//// 编译时递归推导解析参数
+//template <class ...Args>
+//void Print(Args... args)
+//{
+//	ShowList(args...);
+//}
+//int main()
+//{
+//	Print();
+//	Print(1);
+//	Print(1, string("xxxxx"));
+//	Print(1, string("xxxxx"), 2.2);
+//	return 0;
+//}
+
+//template <class T>
+//const T& GetArg(const T& x)
+//{
+//	cout << x << " ";
+//	return x;
+//}
+//template <class ...Args>
+//void Arguments(Args... args)
+//{}
+//template <class ...Args>
+//void Print(Args... args)
+//{
+//	// 注意GetArg必须返回或者到的对象，这样才能组成参数包给Arguments
+//	Arguments(GetArg(args)...);
+//}
+//// 本质可以理解为编译器编译时，包的扩展模式
+//// 将上⾯的函数模板扩展实例化为下⾯的函数
+////void Print(int x, string y, double z)
+////{
+//// Arguments(GetArg(x), GetArg(y), GetArg(z));
+////}
+//int main()
+//{
+//	Print(1, string("xxxxx"), 2.2);
+//	return 0;
+//}
+// emplace_back总体⽽⾔是更⾼效，推荐以后使⽤emplace系列替代insert和push系列
+//int main()
+//{
+//	wyl::list<wyl::string> lt;
+//	// 传左值，跟push_back⼀样，⾛拷⻉构造
+//	wyl::string s1("111111111111");
+//	lt.emplace_back(s1);
+//	cout << "*********************************" << endl;
+//	// 右值，跟push_back⼀样，⾛移动构造
+//	lt.emplace_back(move(s1));
+//	cout << "*********************************" << endl;
+//	// 直接把构造string参数包往下传，直接⽤string参数包构造string
+//	// 这⾥达到的效果是push_back做不到的
+//	lt.emplace_back("111111111111");
+//	cout << "*********************************" << endl << std::endl;;
+//
+//
+//	wyl::list<pair<wyl::string, int>> lt1;
+//	// 跟push_back⼀样
+//	// 构造pair + 拷⻉/移动构造pair到list的节点中data上
+//	pair<wyl::string, int> kv("苹果", 1);
+//	lt1.emplace_back(kv);
+//	cout << "*********************************" << endl;
+//	// 跟push_back⼀样
+//	lt1.emplace_back(move(kv));
+//	cout << "*********************************" << endl;
+//	////////////////////////////////////////////////////////////////////
+//	// 直接把构造pair参数包往下传，直接⽤pair参数包构造pair
+//	// 这⾥达到的效果是push_back做不到的
+//	lt1.emplace_back("苹果", 1);
+//	cout << "*********************************" << endl;
+//	return 0;
+//}
+
+class Person
+{
+public:
+	Person(const char* name = "", int age = 0)
+		:_name(name)
+		, _age(age)
+	{}
+private:
+	wyl::string _name;
+	int _age;
+};
+int main()
+{
+	Person s1;
+	Person s2 = s1;
+	Person s3 = std::move(s1);
+	Person s4;
+	s4 = std::move(s2);
+	return 0;
+}

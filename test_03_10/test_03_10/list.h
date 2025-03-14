@@ -15,7 +15,13 @@ namespace wyl
 		ListNode(T&& data)
 			:_next(nullptr)
 			, _prev(nullptr)
-			, _data(move(data))
+			, _data(std::move(data))
+		{}
+		template<class... Args>
+		ListNode(Args&&... args)
+			:_next(nullptr)
+			, _prev(nullptr)
+			, _data(std::forward<Args>(args)...)
 		{}
 	};
 	template<class T, class Ref, class Ptr>
@@ -74,10 +80,17 @@ namespace wyl
 		{
 			insert(end(), move(x));
 		}
+
+		template<class... Args>
+		void emplace_back(Args&&... args)
+		{
+			emplace(end(), std::forward<Args>(args)...);
+		}
+
 		iterator insert(iterator pos, const T& x)
 		{
 			Node* cur = pos._node;
-			Node* newnode = new Node(x);
+			Node* newnode = new Node(move(x));
 			Node* prev = cur->_prev;
 			// prev newnode cur
 			prev->_next = newnode;
@@ -90,6 +103,19 @@ namespace wyl
 		{
 			Node* cur = pos._node;
 			Node* newnode = new Node(move(x));
+			Node* prev = cur->_prev;
+			// prev newnode cur
+			prev->_next = newnode;
+			newnode->_prev = prev;
+			newnode->_next = cur;
+			cur->_prev = newnode;
+			return iterator(newnode);
+		}
+		template<class... Args>
+		iterator emplace(iterator pos, Args&&... args)
+		{
+			Node* cur = pos._node;
+			Node* newnode = new Node(std::forward<Args>(args)...);
 			Node* prev = cur->_prev;
 			// prev newnode cur
 			prev->_next = newnode;
