@@ -7,12 +7,21 @@
 #include <assert.h>
 #include <thread>
 #include <mutex>
+#include <windows.h>
 
 using std::cout;
 using std::endl;
 
 static const size_t MAX_BYTES = 256 * 1024;
 static const size_t NFREE_LISTS = 208;
+static const size_t NPAGES = 129;
+static const size_t PAGE_SHIFT = 13;
+
+#ifdef _WIN32
+#include <windows.h>
+#else
+// ...
+#endif
 
 // 注意这里的顺序
 // 64位机器会同时定义_WIN64, _WIN32
@@ -21,6 +30,20 @@ typedef unsigned long long PAGE_ID;
 #elif _WIN32
 typedef size_t PAGE_ID; 
 #endif
+
+// 直接去堆上按⻚申请空间
+inline static void* SystemAlloc(size_t kpage)
+{
+#ifdef _WIN32
+	void* ptr = VirtualAlloc(0, kpage * (kpage * 8 * 1024), MEM_COMMIT | MEM_RESERVE,
+		PAGE_READWRITE);
+#else
+	// linux下brk mmap等
+#endif
+	if (ptr == nullptr)
+		throw std::bad_alloc();
+	return ptr;
+}
 
 static void*& NextObj(void* obj)
 {
@@ -194,13 +217,28 @@ public:
 			num = 512;
 		return num;
 	}
+
+	// 计算⼀次向系统获取⼏个⻚
+ // 单个对象 8byte
+ // ...
+ // 单个对象 256KB
+	static size_t NumMovePage(size_t size)
+	{
+		size_t num = NumMoveSize(size);
+		size_t npage = num * size;
+		npage >>= PAGE_SHIFT;
+		if (npage == 0)
+		npage = 1;
+
+		return npage;
+	}
 };
 
 // 管理多个连续页的内存大块结构
 struct Span
 {
 	PAGE_ID _PageId; // 大块内存起始页面的页号
-	size_t n;		 // 页的数量
+	size_t _n;		 // 页的数量
 
 	Span* _next;	 // 双向链表的结构
 	Span* _prev;
@@ -219,6 +257,33 @@ public:
 		_head->_prev = _head;
 	}
 
+	Span* Begin()
+	{
+		return _head->_next;
+	}
+
+	Span* End()
+	{
+		return _head;
+	}
+
+	bool Empty()
+	{
+		return _head->_next == _head;
+	}
+
+	void PushFront(Span* span)
+	{
+		Insert(Begin(), span);
+	}
+
+	Span* PopFront()
+	{
+		Span* front = _head->_next;
+		Erase(front);
+		return front;
+	}
+
 	void Insert(Span* pos, Span* newSpan)
 	{
 		assert(pos);
@@ -231,10 +296,10 @@ public:
 		pos->_prev = newSpan;
 	}
 
-	void Erase(Span* pos, Span* newSpan)
+	void Erase(Span* pos)
 	{
 		assert(pos);
-		assert(newSpan);
+		assert(pos != _head);
 
 		Span* prev = pos->_prev;
 		Span* next = pos->_next;

@@ -32,13 +32,15 @@ void* ThreadCache::Deallocate(void* ptr, size_t size)
 
 }
 
+
 void* ThreadCache::FetchFromCentralCache(size_t index, size_t size)
 {
 	// 慢开始的反馈调节算法
 	// 1.开始不会向central cache申请太多，因为太多了可能用不完
-	// 2.如果不断这个size大小的内存需求，就会逐渐增长到上限
+	// 2.这个size大小的内存需求，就会逐渐增长到上限
 	// 3. size越大，一次向central cache要的batch就越小，反之亦然
 	size_t batchNum = std::min(_freeLists[index].MaxSize(), SizeClass::NumMoveSize(size));
+	//size_t batchNum = std::min(1, 2);
 	if (_freeLists[index].MaxSize() == batchNum)
 	{
 		_freeLists[index].MaxSize() += 1;
