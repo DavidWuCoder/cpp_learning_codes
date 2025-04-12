@@ -1,6 +1,7 @@
 ﻿#include <iostream>
 #include <vector>
 #include <time.h>
+#include "Common.h"
 
 using std::cout;
 using std::endl;
@@ -17,19 +18,19 @@ using std::endl;
 //	
 //};
 
-// 直接去堆上按⻚申请空间
-inline static void* SystemAlloc(size_t kpage)
-{
-#ifdef _WIN32
-	void* ptr = VirtualAlloc(0, kpage * (kpage * 8 * 1024), MEM_COMMIT | MEM_RESERVE,
-		PAGE_READWRITE);
-#else
- // linux下brk mmap等
-#endif
-	if (ptr == nullptr)
-	throw std::bad_alloc();
-	return ptr;
-}
+//// 直接去堆上按⻚申请空间
+//inline static void* SystemAlloc(size_t kpage)
+//{
+//#ifdef _WIN32
+//	void* ptr = VirtualAlloc(0, kpage * (kpage * 8 * 1024), MEM_COMMIT | MEM_RESERVE,
+//		PAGE_READWRITE);
+//#else
+// // linux下brk mmap等
+//#endif
+//	if (ptr == nullptr)
+//	throw std::bad_alloc();
+//	return ptr;
+//}
 
 template<class T>
 class ObjectPool

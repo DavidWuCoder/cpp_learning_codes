@@ -28,6 +28,7 @@ size_t CentralCache::FetchRangeObj(void*& start, void*& end, size_t batchNum, si
 	}
 	span->_freeList = NextObj(end);
 	NextObj(end) = nullptr;
+	span->_useCount += actualNum;
 
 	_spanLists[index]._mtx.unlock();
 	
@@ -57,6 +58,7 @@ Span* CentralCache::GetOneSpan(SpanList& list, size_t size)
 	// 走到这里说没有空闲span了，只能找page cache 要
 	PageCache::GetInstance()->_pageMtx.lock();
 	Span* span = PageCache::GetInstance()->NewSpan(SizeClass::NumMovePage(size));
+	span->_isUse = true;
 	PageCache::GetInstance()->_pageMtx.unlock();
 
 	// 切分不需要加锁，因为这会其他线程访问不到这个span
@@ -70,8 +72,10 @@ Span* CentralCache::GetOneSpan(SpanList& list, size_t size)
 	span->_freeList = start;
 	start += size;
 	void* tail = span->_freeList;
+	int i = 1;
 	while (start < end)
 	{
+		i++;
 		NextObj(tail) = start;
 		tail = NextObj(tail);
 		start += size;
@@ -82,4 +86,44 @@ Span* CentralCache::GetOneSpan(SpanList& list, size_t size)
 	list.PushFront(span);
 
 	return span;
+}
+
+void CentralCache::ReleaseListToSpans(void* start, size_t size)
+{
+	size_t index = SizeClass::Index(size);
+	_spanLists[index]._mtx.lock();
+
+	while (start)
+	{
+		void* next = NextObj(start);
+
+		Span* span = PageCache::GetInstance()->MapObjectToSpan(start);
+
+		NextObj(start) = span->_freeList;
+		span->_freeList = start;
+		span->_useCount--;
+		// span的所有小块内存都回来了
+		// 这个span就可以再交给page chache
+		if (span->_useCount == 0)
+		{
+			_spanLists[index].Erase(span);
+			span->_freeList = nullptr;
+			span->_next = nullptr;
+			span->_prev = nullptr;
+
+			// 释放span给page cache时，使用page cache的锁即可
+			// 释放桶锁，保证其他线程申请内存正常进行
+			_spanLists[index]._mtx.unlock();
+
+			PageCache::GetInstance()->_pageMtx.lock();
+			PageCache::GetInstance()->ReleaseSpanToPageCache(span);
+			PageCache::GetInstance()->_pageMtx.unlock();
+
+			_spanLists[index]._mtx.lock();
+		}
+
+		start = next;
+	}
+
+	_spanLists[index]._mtx.unlock();
 }

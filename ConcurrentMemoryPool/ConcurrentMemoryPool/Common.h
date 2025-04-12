@@ -7,7 +7,7 @@
 #include <assert.h>
 #include <thread>
 #include <mutex>
-#include <windows.h>
+#include <unordered_map>
 
 using std::cout;
 using std::endl;
@@ -31,17 +31,18 @@ typedef unsigned long long PAGE_ID;
 typedef size_t PAGE_ID; 
 #endif
 
-// 直接去堆上按⻚申请空间
+// 直接去堆上按页申请空间
 inline static void* SystemAlloc(size_t kpage)
 {
 #ifdef _WIN32
-	void* ptr = VirtualAlloc(0, kpage * (kpage * 8 * 1024), MEM_COMMIT | MEM_RESERVE,
-		PAGE_READWRITE);
+	void* ptr = VirtualAlloc(0, kpage << 13, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
 #else
 	// linux下brk mmap等
 #endif
+
 	if (ptr == nullptr)
 		throw std::bad_alloc();
+
 	return ptr;
 }
 
@@ -60,12 +61,34 @@ public:
 		// 头插
 		NextObj(obj) = _freeList;
 		_freeList = obj;
+		++_size;
 	}
 
-	void PushRange(void* start, void* end)
+	void PopRange(void*& start, void*& end, size_t n)
+	{
+		assert(n >= _size);
+		start = _freeList;
+		end = start;
+		for (size_t i = 0; i < n - 1; i++)
+		{
+			end = NextObj(end);
+		}
+		_freeList = NextObj(end);
+		NextObj(end) = nullptr;
+		_size -= n;
+	}
+
+	size_t Size()
+	{
+		return _size;
+	}
+
+	void PushRange(void* start, void* end, size_t n)
 	{
 		NextObj(end) = _freeList;
 		_freeList = start;
+
+		_size += n;
 	}
 
 	void*& Pop()
@@ -74,6 +97,8 @@ public:
 		// 头删
 		void* obj = _freeList;
 		_freeList = NextObj(obj);
+		--_size;
+
 		return obj;
 	}
 
@@ -89,6 +114,7 @@ public:
 private:
 	void* _freeList = nullptr;
 	size_t _maxSize = 1;
+	size_t _size = 0;
 };
 
 
@@ -238,13 +264,15 @@ public:
 struct Span
 {
 	PAGE_ID _PageId; // 大块内存起始页面的页号
-	size_t _n;		 // 页的数量
+	size_t _n = 0;		 // 页的数量
 
 	Span* _next;	 // 双向链表的结构
 	Span* _prev;
 
-	size_t _useCount; // 切好的小块内存，被分配给thread cache的计数
+	size_t _useCount = 0; // 切好的小块内存，被分配给thread cache的计数
 	void* _freeList;  // 切好的小块内存的自由链表
+
+	bool _isUse = false;	// 是否在被使用
 };
 
 class SpanList

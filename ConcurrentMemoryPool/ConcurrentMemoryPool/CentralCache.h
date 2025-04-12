@@ -17,6 +17,9 @@ public:
 	// 从中⼼缓存获取⼀定数量的对象给thread cache
 	size_t FetchRangeObj(void*& start, void*& end, size_t batchNum, size_t size);
 
+	// 将⼀定数量的对象释放到span跨度
+	void ReleaseListToSpans(void* start, size_t size);
+
 private:
 	// 构造函数私有，则无法创建
 	CentralCache()

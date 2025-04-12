@@ -11,6 +11,8 @@ public:
 
 	// 从中⼼缓存获取对象
 	void* FetchFromCentralCache(size_t index, size_t size);
+
+	void ListTooLong(FreeList& list, size_t size);
 private:
 	FreeList _freeLists[NFREE_LISTS];
 };
