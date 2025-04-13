@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Common.h"
+#include "ObjectPool.h"
 
 class PageCache
 {
@@ -16,20 +17,21 @@ public:
 	// 释放空闲span回到Pagecache，并合并相邻的span
 	void ReleaseSpanToPageCache(Span* span);
 
-	// 获取一个k页的span
+	// 获取一个K页的span
 	Span* NewSpan(size_t k);
 
-	std::mutex _pageMtx; // _pageLists的整体锁
-
+	std::mutex _pageMtx;
 private:
 	SpanList _spanLists[NPAGES];
+	ObjectPool<Span> _spanPool;
 
-	std::unordered_map<PAGE_ID, Span*> _idSpanMap;
+	//std::unordered_map<PAGE_ID, Span*> _idSpanMap;
+	std::map<PAGE_ID, Span*> _idSpanMap;
 
 	PageCache()
 	{}
-
 	PageCache(const PageCache&) = delete;
+
 
 	static PageCache _sInst;
 };

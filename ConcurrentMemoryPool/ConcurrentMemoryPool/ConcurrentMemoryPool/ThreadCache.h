@@ -1,20 +1,22 @@
-ï»¿#pragma once
+#pragma once
 
 #include "Common.h"
 
 class ThreadCache
 {
 public:
-	// ç”³è¯·å’Œé‡Šæ”¾å†…å­˜å¯¹è±¡
+	// ÉêÇëºÍÊÍ·ÅÄÚ´æ¶ÔÏó
 	void* Allocate(size_t size);
-	void* Deallocate(void* ptr, size_t size);
+	void Deallocate(void* ptr, size_t size);
 
-	// ä»ä¸­â¼¼ç¼“å­˜è·å–å¯¹è±¡
+	// ´ÓÖĞĞÄ»º´æ»ñÈ¡¶ÔÏó
 	void* FetchFromCentralCache(size_t index, size_t size);
 
+	// ÊÍ·Å¶ÔÏóÊ±£¬Á´±í¹ı³¤Ê±£¬»ØÊÕÄÚ´æ»Øµ½ÖĞĞÄ»º´æ
 	void ListTooLong(FreeList& list, size_t size);
 private:
-	FreeList _freeLists[NFREE_LISTS];
+	FreeList _freeLists[NFREELIST];
 };
 
+// TLS thread local storage
 static _declspec(thread) ThreadCache* pTLSThreadCache = nullptr;
