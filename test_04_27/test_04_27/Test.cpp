@@ -31,9 +31,16 @@ using namespace std;
 //	std::cout << sizeof(std::vector<int>);
 //	return 0;
 // }
+
+#include "BloomFilter.h"
+
 int main()
 {
-	std::vector<double> v{ 1, 2, 3 };
-	std::cout << v.size() << std::endl;         // 输出3（元素数量）
-	std::cout << sizeof(v);        // 仍为24（对象自身大小）
+	//std::vector<double> v{ 1, 2, 3 };
+	//std::cout << v.size() << std::endl;         // 输出3（元素数量)
+	//std::cout << sizeof(v);        // 仍为24（对象自身大小）
+	//wyl::TestBloom1();
+	wyl::TestBloomFilter2();
+
+	return 0;
 }

@@ -43,32 +43,32 @@ namespace wyl
 		std::vector<size_t> _bs;
 	};
 
-	template<size_t N>
-	class twobitset
-	{
-	public:
-		void set(size_t x)
-		{
-			bool bit1 = _bs1.test(x);
-			bool bit2 = _bs2.test(x);
+	//template<size_t N>
+	//class twobitset
+	//{
+	//public:
+	//	void set(size_t x)
+	//	{
+	//		bool bit1 = _bs1.test(x);
+	//		bool bit2 = _bs2.test(x);
 
-			if (!bit1 && !bit2)
-			{
-				_bs2.set(x);
-			}
-			else if (!bit1 && bit2)
-			{
-				_bs1.set(x);
-				_bs2.reset(x);
-			}
-			else if (bit1 && !bit2)
-			{
-				_bs2.set(x);
-			}
-		}
+	//		if (!bit1 && !bit2)
+	//		{
+	//			_bs2.set(x);
+	//		}
+	//		else if (!bit1 && bit2)
+	//		{
+	//			_bs1.set(x);
+	//			_bs2.reset(x);
+	//		}
+	//		else if (bit1 && !bit2)
+	//		{
+	//			_bs2.set(x);
+	//		}
+	//	}
 
-	private:
-		bitset<N> _bs1;
-		bitset<N> _bs2;
-	};
+	//private:
+	//	bitset<N> _bs1;
+	//	bitset<N> _bs2;
+	//};
 }
