@@ -135,7 +135,6 @@ int main()
 
 		}
 catch (const Exception& e) // 这⾥捕获基类，基类对象和派⽣类对象都可以被
-			捕获
  {
  cout << e.what() << endl;
  }
